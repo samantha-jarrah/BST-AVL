@@ -156,7 +156,21 @@ class AVL(BST):
         if current_node.value == value:
             # root has 2 subtrees
             if current_node.left and current_node.right:
-                pass
+                if current_node.right.left is None:
+                    inorder_successor, inorder_parent = current_node.right, parent
+                else:
+                    inorder_successor, inorder_parent = self._find_inorder_successor(current_node)
+
+                # replace current_node with inorder_successor and update pointers
+
+                if inorder_parent == current_node:
+                    inorder_successor.left, self._root = self._root.left, inorder_successor
+                    self._root.parent = None
+                else:
+                    inorder_successor.left, inorder_parent.left = self._root.left, inorder_successor.right
+                    inorder_successor.right = self._root.right
+                    self._root = inorder_successor
+                    self._root.parent = None
             # root has 1 subtree
             elif current_node.left or current_node.right:
                 # left subtree
@@ -165,12 +179,14 @@ class AVL(BST):
                     self._root.left = None
                     self._root.right = None
                     self._root.parent = None
+                    self._root.height = 0
                 # right subtree
                 if current_node.right:
                     self._root = current_node.right
                     self._root.left = None
                     self._root.right = None
                     self._root.parent = None
+                    self._root.height = 0
             # root has 0 subtrees
             else:
                 self.make_empty()

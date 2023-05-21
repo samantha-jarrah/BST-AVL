@@ -207,34 +207,6 @@ class BST:
             self._remove_no_subtrees(parent_node, current_node)
             return True
 
-    # def _remove_root(self):
-    #     # root is only node
-    #     if self._root.right is None and self._root.left is None:
-    #         self._root = None
-    #     # no right subtree
-    #     elif self._root.right is None:
-    #         self._root = self._root.left
-    #     # no left subtree
-    #     elif self._root.left is None:
-    #         new_root = self._root.right
-    #         self._root = new_root
-    #         self._root.left, self._root.right = new_root.left, new_root.right
-    #     # both right and left subtrees
-    #     else:
-    #         inorder_successor, inorder_parent = self._root.right, self._root
-    #
-    #         while inorder_successor.left is not None:
-    #             inorder_successor = inorder_successor.left
-    #             if inorder_parent == self._root:
-    #                 inorder_parent = inorder_parent.right
-    #             else:
-    #                 inorder_parent = inorder_parent.left
-    #
-    #         # replace root node with inorder successor
-    #         inorder_parent.left = inorder_successor.right
-    #         inorder_successor.right, inorder_successor.left = self._root.right, self._root.left
-    #         self._root = inorder_successor
-
     def _remove_no_subtrees(self, parent_node: BSTNode, remove_node: BSTNode) -> None:
         """
         Remove a node that has no subtrees
