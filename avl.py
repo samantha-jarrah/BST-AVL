@@ -157,20 +157,26 @@ class AVL(BST):
             # root has 2 subtrees
             if current_node.left and current_node.right:
                 if current_node.right.left is None:
-                    inorder_successor, inorder_parent = current_node.right, parent
+                    inorder_successor, inorder_parent = current_node.right, self._root
                 else:
                     inorder_successor, inorder_parent = self._find_inorder_successor(current_node)
 
                 # replace current_node with inorder_successor and update pointers
-
                 if inorder_parent == current_node:
                     inorder_successor.left, self._root = self._root.left, inorder_successor
+                    self._root.left.parent = self._root
                     self._root.parent = None
+                    self._rebalance(self._root)
                 else:
-                    inorder_successor.left, inorder_parent.left = self._root.left, inorder_successor.right
+                    inorder_successor.left = self._root.left
+                    inorder_parent.left = inorder_successor.right
                     inorder_successor.right = self._root.right
                     self._root = inorder_successor
                     self._root.parent = None
+                    bal_check_node = inorder_parent
+                    while bal_check_node:
+                        self._rebalance(bal_check_node)
+                        bal_check_node = bal_check_node.parent
             # root has 1 subtree
             elif current_node.left or current_node.right:
                 # left subtree
@@ -312,23 +318,7 @@ class AVL(BST):
         Time Complexity: O(n)
         """
         bal_fac = self._balance_factor(node)
-        # subtree is unbalanced
-            # if bal_fac < -1 or bal_fac > 1:
-            #     # L-L
-            #     if bal_fac < -1 and self._balance_factor(node.left) < 0:
-            #         self._rotate_right(node)
-            #     # R-R
-            #     elif bal_fac > 1 and self._balance_factor(node.right) > 0:
-            #         self._rotate_left(node)
-            #     # L-R
-            #     elif bal_fac < -1 and self._balance_factor(node.left) > 0:
-            #         self._rotate_left(node.right)
-            #         self._rotate_right(node)
-            #     # R-L
-            #     else:
-            #         #TODO: check that this is the right nodes to be passing
-            #         self._rotate_right(node.left)
-            #         self._rotate_left(node)
+
         if bal_fac < -1:
             # L-R imbalance
             if self._balance_factor(node.left) > 0:
@@ -423,6 +413,7 @@ if __name__ == '__main__':
         # ((1,), 1),  #remove root which is only node
         # ((1, 2), 1),   #remove root with right subtree
         # ((3, 2), 3),  # remove root with left subtree
+        ((3, 6, 1, 2), 3),   # remove root
         # ((1, 2, 3), 1),  # no AVL rotation
         # ((1, 2, 3), 2),  # no AVL rotation
         # ((1, 2, 3), 3),  # no AVL rotation
