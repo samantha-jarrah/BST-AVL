@@ -149,6 +149,11 @@ class AVL(BST):
         """
         TODO: Write your implementation
         """
+
+        # AVL is empty
+        if self._root is None:
+            return False
+
         parent = None
         current_node = self._root
 
@@ -177,6 +182,7 @@ class AVL(BST):
                     while bal_check_node:
                         self._rebalance(bal_check_node)
                         bal_check_node = bal_check_node.parent
+
             # root has 1 subtree
             elif current_node.left or current_node.right:
                 # left subtree
@@ -198,6 +204,41 @@ class AVL(BST):
                 self.make_empty()
             return True
 
+        while current_node.value != value:
+            # value is less, move left
+            if value < current_node.value:
+                parent_node, current_node = current_node, current_node.left
+                # did not find value
+                if current_node is None:
+                    return False
+            # value is greater, move right
+            else:
+                parent_node, current_node = current_node, current_node.right
+                # did not find value
+                if current_node is None:
+                    return False
+
+        # two subtrees exist
+        if current_node.left and current_node.right:
+            pass
+            # self._remove_two_subtrees(parent_node, current_node)
+            # return True
+        # 1 subtree exists
+        elif current_node.left or current_node.right:
+            pass
+            # self._remove_one_subtree(parent_node, current_node)
+            # return True
+        # no subtrees
+        else:
+            if parent_node.left == current_node:
+                parent_node.left = None
+            else:
+                parent_node.right = None
+            bal_check_node = parent_node
+            while bal_check_node:
+                self._rebalance(bal_check_node)
+                bal_check_node = bal_check_node.parent
+        return True
     # Experiment and see if you can use the optional                         #
     # subtree removal methods defined in the BST here in the AVL.            #
     # Call normally using self -> self._remove_no_subtrees(parent, node)     #
@@ -413,8 +454,8 @@ if __name__ == '__main__':
         # ((1,), 1),  #remove root which is only node
         # ((1, 2), 1),   #remove root with right subtree
         # ((3, 2), 3),  # remove root with left subtree
-        ((3, 6, 1, 2), 3),   # remove root
-        # ((1, 2, 3), 1),  # no AVL rotation
+        # ((3, 6, 1, 2), 3),   # remove root
+        ((1, 2, 3), 1),  # no AVL rotation
         # ((1, 2, 3), 2),  # no AVL rotation
         # ((1, 2, 3), 3),  # no AVL rotation
         # ((50, 40, 60, 30, 70, 20, 80, 45), 0),
