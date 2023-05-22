@@ -154,7 +154,7 @@ class AVL(BST):
         if self._root is None:
             return False
 
-        parent = None
+        # parent = None
         current_node = self._root
 
         # node to remove is root
@@ -174,10 +174,15 @@ class AVL(BST):
                     self._rebalance(self._root)
                 else:
                     inorder_successor.left = self._root.left
+                    self._root.left.parent = inorder_successor
                     inorder_parent.left = inorder_successor.right
+                    if inorder_successor.right:
+                        inorder_parent.left.parent = inorder_parent
                     inorder_successor.right = self._root.right
+                    self._root.right.parent = inorder_successor
                     self._root = inorder_successor
                     self._root.parent = None
+
                     bal_check_node = inorder_parent
                     while bal_check_node:
                         self._rebalance(bal_check_node)
@@ -227,13 +232,13 @@ class AVL(BST):
                 inorder_successor, inorder_parent = self._find_inorder_successor(current_node)
 
             # is current_node a left or right child
-            if parent.left == current_node:
+            if parent_node.left == current_node:
                 # replace remove_node with inorder successor and update pointers
                 if inorder_parent == current_node:
                     inorder_successor.left = current_node.left
                     current_node.left.parent = inorder_successor
-                    parent.left = inorder_successor
-                    inorder_successor.parent = parent
+                    parent_node.left = inorder_successor
+                    inorder_successor.parent = parent_node
 
                     # rebalance
                     bal_check_node = inorder_successor
@@ -252,8 +257,8 @@ class AVL(BST):
                     inorder_successor.left = current_node.left
                     current_node.left.parent = inorder_successor
 
-                    parent.left = inorder_successor
-                    inorder_successor.parent = parent
+                    parent_node.left = inorder_successor
+                    inorder_successor.parent = parent_node
 
                     # rebalance
                     bal_check_node = inorder_parent
@@ -268,8 +273,8 @@ class AVL(BST):
                 if inorder_parent == current_node:
                     inorder_successor.left = current_node.left
                     current_node.left.parent = inorder_successor
-                    parent.right = inorder_successor
-                    inorder_successor.parent = parent
+                    parent_node.right = inorder_successor
+                    inorder_successor.parent = parent_node
 
                     # rebalance
                     bal_check_node = inorder_successor
@@ -288,8 +293,8 @@ class AVL(BST):
                     inorder_successor.right = current_node.right
                     current_node.right.parent = inorder_successor
 
-                    parent.right = inorder_successor
-                    inorder_successor.parent = parent
+                    parent_node.right = inorder_successor
+                    inorder_successor.parent = parent_node
 
                     # rebalance
                     bal_check_node = inorder_parent
@@ -543,9 +548,9 @@ if __name__ == '__main__':
         #     raise Exception("PROBLEM WITH ADD OPERATION")
     # print('add() stress test finished')
     #
-    print("\nPDF - method remove() example 1")
-    print("-------------------------------")
-    test_cases = (
+    # print("\nPDF - method remove() example 1")
+    # print("-------------------------------")
+    # test_cases = (
         # ((1,), 1),  #remove root which is only node
         # ((1, 2), 1),   #remove root with right subtree
         # ((3, 2), 3),  # remove root with left subtree
@@ -558,17 +563,18 @@ if __name__ == '__main__':
         # ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
         # ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
         # ((50, 40, 60, 30, 70, 20, 80, 45), 30),  # no AVL rotation
-    )
-    for case, del_value in test_cases:
-        tree = AVL(case)
-        print('INPUT  :', tree, "DEL:", del_value)
-        tree.remove(del_value)
-        print('RESULT :', tree)
+    # )
+    # for case, del_value in test_cases:
+    #     tree = AVL(case)
+    #     print('INPUT  :', tree, "DEL:", del_value)
+    #     tree.remove(del_value)
+    #     print('RESULT :', tree)
     #
     # print("\nPDF - method remove() example 2")
     # print("-------------------------------")
     # test_cases = (
-    #     ((50, 40, 60, 30, 70, 20, 80, 45), 20),  # RR
+          # ((50, 40, 60, 30, 70, 20, 80, 45), 30),
+        # ((50, 40, 60, 30, 70, 20, 80, 45), 20),  # RR
     #     ((50, 40, 60, 30, 70, 20, 80, 15), 40),  # LL
     #     ((50, 40, 60, 30, 70, 20, 80, 35), 20),  # RL
     #     ((50, 40, 60, 30, 70, 20, 80, 25), 40),  # LR
@@ -588,15 +594,15 @@ if __name__ == '__main__':
     #     tree.remove(del_value)
     #     print('RESULT :', tree)
     #
-    # print("\nPDF - method remove() example 4")
-    # print("-------------------------------")
-    # case = range(0, 34, 3)
-    # tree = AVL(case)
-    # for _ in case[:-2]:
-    #     root_value = tree.get_root().value
-    #     print('INPUT  :', tree, root_value)
-    #     tree.remove(root_value)
-    #     print('RESULT :', tree)
+    print("\nPDF - method remove() example 4")
+    print("-------------------------------")
+    case = range(0, 34, 3)
+    tree = AVL(case)
+    for _ in case[:-2]:
+        root_value = tree.get_root().value
+        print('INPUT  :', tree, root_value)
+        tree.remove(root_value)
+        print('RESULT :', tree)
     #
     # print("\nPDF - method remove() example 5")
     # print("-------------------------------")
