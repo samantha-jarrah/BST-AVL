@@ -290,6 +290,7 @@ class BST:
     def _find_inorder_successor(self, remove_node):
         """
         Finds and returns the inorder_successor and inorder successors' parent of passed remove node
+        # TODO: what is this time complexity?
         Time Complexity: O(n)
         """
         inorder_successor, inorder_parent = remove_node.right.left, remove_node.right

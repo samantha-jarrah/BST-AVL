@@ -220,20 +220,115 @@ class AVL(BST):
 
         # two subtrees exist
         if current_node.left and current_node.right:
-            pass
-            # self._remove_two_subtrees(parent_node, current_node)
-            # return True
+            # find inorder successor and inorder successor's parent
+            if current_node.right.left is None:
+                inorder_successor, inorder_parent = current_node.right, current_node
+            else:
+                inorder_successor, inorder_parent = self._find_inorder_successor(current_node)
+
+            # is current_node a left or right child
+            if parent.left == current_node:
+                # replace remove_node with inorder successor and update pointers
+                if inorder_parent == current_node:
+                    inorder_successor.left = current_node.left
+                    current_node.left.parent = inorder_successor
+                    parent.left = inorder_successor
+                    inorder_successor.parent = parent
+
+                    # rebalance
+                    bal_check_node = inorder_successor
+                    while bal_check_node:
+                        self._rebalance(bal_check_node)
+                        bal_check_node = bal_check_node.parent
+
+                else:
+                    inorder_parent.left = inorder_successor.right
+                    if inorder_successor.right:
+                        inorder_successor.right.parent = inorder_parent
+
+                    inorder_successor.right = current_node.right
+                    current_node.right.parent = inorder_successor
+
+                    inorder_successor.left = current_node.left
+                    current_node.left.parent = inorder_successor
+
+                    parent.left = inorder_successor
+                    inorder_successor.parent = parent
+
+                    # rebalance
+                    bal_check_node = inorder_parent
+                    while bal_check_node:
+                        self._rebalance(bal_check_node)
+                        bal_check_node = bal_check_node.parent
+
+
+            # handles remove_node being right child
+            else:
+                # replace current_node with inorder_successor and update pointers
+                if inorder_parent == current_node:
+                    inorder_successor.left = current_node.left
+                    current_node.left.parent = inorder_successor
+                    parent.right = inorder_successor
+                    inorder_successor.parent = parent
+
+                    # rebalance
+                    bal_check_node = inorder_successor
+                    while bal_check_node:
+                        self._rebalance(bal_check_node)
+                        bal_check_node = bal_check_node.parent
+
+                else:
+                    inorder_successor.left = current_node.left
+                    current_node.left.parent = inorder_successor
+
+                    inorder_parent.left = inorder_successor.right
+                    if inorder_successor.right:
+                        inorder_successor.right.parent = inorder_parent
+
+                    inorder_successor.right = current_node.right
+                    current_node.right.parent = inorder_successor
+
+                    parent.right = inorder_successor
+                    inorder_successor.parent = parent
+
+                    # rebalance
+                    bal_check_node = inorder_parent
+                    while bal_check_node:
+                        self._rebalance(bal_check_node)
+                        bal_check_node = bal_check_node.parent
+
         # 1 subtree exists
         elif current_node.left or current_node.right:
-            pass
-            # self._remove_one_subtree(parent_node, current_node)
-            # return True
+            # current node has a left subtree
+            if current_node.left:
+                if parent_node.right == current_node:
+                    parent_node.right = current_node.left
+                    current_node.left.parent = parent_node
+                else:
+                    parent_node.left = current_node.left
+                    current_node.left.parent = parent_node
+            # current node has a right subtree
+            else:
+                if parent_node.right == current_node:
+                    parent_node.right = current_node.right
+                    current_node.right.parent = parent_node
+                else:
+                    parent_node.left = current_node.right
+                    current_node.right.parent = parent_node
+            # rebalance
+            bal_check_node = parent_node
+            while bal_check_node:
+                self._rebalance(bal_check_node)
+                bal_check_node = bal_check_node.parent
+
         # no subtrees
         else:
             if parent_node.left == current_node:
                 parent_node.left = None
             else:
                 parent_node.right = None
+
+            # rebalance
             bal_check_node = parent_node
             while bal_check_node:
                 self._rebalance(bal_check_node)
@@ -247,11 +342,11 @@ class AVL(BST):
     # Remove these method stubs if you decide not to use them.               #
     # Change this method in any way you'd like.                              #
 
-    def _remove_two_subtrees(self, remove_parent: AVLNode, remove_node: AVLNode) -> AVLNode:
-        """
-        TODO: Write your implementation
-        """
-        pass
+    # def _remove_two_subtrees(self, remove_parent: AVLNode, remove_node: AVLNode) -> AVLNode:
+    #     """
+    #     TODO: Write your implementation
+    #     """
+    #     pass
 
     def _balance_factor(self, node: AVLNode) -> int:
         """
@@ -455,9 +550,10 @@ if __name__ == '__main__':
         # ((1, 2), 1),   #remove root with right subtree
         # ((3, 2), 3),  # remove root with left subtree
         # ((3, 6, 1, 2), 3),   # remove root
-        ((1, 2, 3), 1),  # no AVL rotation
+        # ((1, 2, 3), 1),  # no AVL rotation
         # ((1, 2, 3), 2),  # no AVL rotation
         # ((1, 2, 3), 3),  # no AVL rotation
+        # ((50, 40, 60, 30, 70, 80), 80),
         # ((50, 40, 60, 30, 70, 20, 80, 45), 0),
         # ((50, 40, 60, 30, 70, 20, 80, 45), 45),  # no AVL rotation
         # ((50, 40, 60, 30, 70, 20, 80, 45), 40),  # no AVL rotation
