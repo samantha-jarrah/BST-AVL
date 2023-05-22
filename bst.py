@@ -290,8 +290,7 @@ class BST:
     def _find_inorder_successor(self, remove_node):
         """
         Finds and returns the inorder_successor and inorder successors' parent of passed remove node
-        # TODO: what is this time complexity?
-        Time Complexity: O(n)
+        Time Complexity: O(n) for BST / O(log n) for AVL
         """
         inorder_successor, inorder_parent = remove_node.right.left, remove_node.right
         while inorder_successor.left is not None:
@@ -346,7 +345,6 @@ class BST:
 
     # def inorder_traversal(self) -> Queue:
     #     """
-    #         TODO: Write your implementation
     #         """
     #     # temp_stack will keep track of the nodes that have been visited already
     #     temp_stack = Stack()
